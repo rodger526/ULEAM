@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xisce</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: #333;
+}
+/* CONTENIDO COMO HOJA */
+.container {
+    width: 82%;
+    margin: 20px auto;
+    background: #ffffff; /* 🔥 fondo blanco */
+    padding: 20px 25px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.08); /* sombra suave */
+}
+/* ya no necesitas tarjetas internas */
+.card,
+.main-table-card {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+/* HEADER */
+.header{
+    background: url(header.png);
+    color:white;
+    padding:10px 40px;
+    display:flex;
+    justify-content:space-between;
+    
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo img{
+    height:50px;
+}
+
+.top-menu{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    background-color: #448811;
+}
+
+.menu-item{
+    position:relative;
+    cursor:pointer;
+    padding:2px 10px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    transition:background 0.3s;
+}
+
+.menu-item:hover{
+    background:rgba(0,0,0,0.2);
+}
+
+/* ===== TOP MENU ===== */
+.top-menu {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    z-index: 1;
+    background-color: #3a7a1a;
+}
+
+.menu-item {
+    position: relative;
+    cursor: pointer;
+    padding: 0 16px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: white;
+    font-size: 13px;
+    transition: background 0.2s;
+}
+
+.menu-item:hover { background: rgba(0,0,0,0.2); }
+
+/* Notification badge */
+.notif-badge {
+    background: #e74c3c;
+    color: white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -4px;
+    margin-top: -8px;
+    position: absolute;
+    top: 12px;
+    right: 6px;
+}
+
+/* Profile pic placeholder */
+.profile-pic {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: white;
+}
+
+.arrow-down { font-size: 10px; }
+
+.logout-btn {
+    padding: 0 12px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
+}
+
+.logout-btn:hover { background: rgba(0,0,0,0.2); }
+
+/* DROPDOWN */
+
+/* DROPDOWN */
+.dropdown {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background: #f3f3f3;
+    color: #333;
+    display: none;
+    flex-direction: column;
+    border: 1px solid #cfcfcf;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    z-index: 1000;
+    min-width: 200px;
+}
+
+.dropdown.show { display: flex; }
+
+.dropdown a {
+    padding: 10px 14px;
+    text-decoration: none;
+    color: #333;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.dropdown a:last-child { border-bottom: none; }
+.dropdown a:hover { background: #e0e0e0; }
+
+/* ===== NAV BAR ===== */
+.nav-bar {
+    background: #3a7a1a;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 36px;
+    gap: 5px;
+}
+
+.nav-bar a {
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 10px;
+    height: 36px;
+    transition: background 0.2s;
+}
+
+.nav-bar a:hover, .nav-bar a.active {
+    background: rgba(0,0,0,0.2);
+}
+
+/* ===== MAIN CONTENT ===== */
+.container {
+    width: 82%;
+    margin: 18px auto;
+}
+
+/* ===== CARD ===== */
+.card {
+    background: #fff;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+}
+
+/* ===== CARD HEADER (Notas title) ===== */
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #6c7ae0;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.card-title {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.card-subtitle {
+    font-size: 11px;
+    color: #777;
+}
+/* ===== CHARTS GRID ===== */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.chart-card {
+    background: white;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    padding: 14px 16px;
+    text-align: center;
+}
+
+.chart-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.chart-container {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 8px;
+}
+
+.chart-value-label {
+    font-size: 12px;
+    color: #555;
+    margin-top: 6px;
+}
+
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: #555;
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+/* ===== MAIN TABLE ===== */
+.main-table-card {
+    background: white;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+th, td {
+    border: 1px solid #d0d0d0;
+    padding: 7px 10px;
+    text-align: center;
+}
+/* ===== NAV BAR ===== */
+.nav-bar {
+    background: #3a7a1a;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 36px;
+    gap: 5px;
+}
+
+.nav-bar a {
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 10px;
+    height: 36px;
+    transition: background 0.2s;
+}
+
+.nav-bar a:hover, .nav-bar a.active {
+    background: rgba(0,0,0,0.2);
+}
+
+/* ===== MAIN CONTENT ===== */
+.container {
+    width: 82%;
+    margin: 18px auto;
+}
+
+/* ===== CARD ===== */
+.card {
+    background: #fff;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+}
+
+/* ===== CARD HEADER (Notas title) ===== */
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #6c7ae0;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.card-title {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.card-subtitle {
+    font-size: 11px;
+    color: #777;
+}
+
+.btn-print {
+    background: #4a89dc;
+    color: white;
+    border: none;
+    padding: 7px 14px;
+    font-size: 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-print:hover { background: #3a79cc; }
+th {
+    background: #e8e8e8;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+td:first-child { text-align: left; font-weight: 500; }
+
+.total-row td {
+    background: #e89c2f;
+    font-weight: bold;
+    color: #333;
+}
+
+.btn-print {
+    background: #4a89dc;
+    color: white;
+    border: none;
+    padding: 7px 14px;
+    font-size: 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-print:hover { background: #3a79cc; }
+
+/* ===== INFO CARD ===== */
+.info-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.info-text { font-size: 13px; line-height: 1.6; }
+
+.materias-count {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+/* ===== CHARTS GRID ===== */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.chart-card {
+    background: white;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    padding: 14px 16px;
+    text-align: center;
+}
+
+.chart-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.chart-container {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 8px;
+}
+
+.chart-value-label {
+    font-size: 12px;
+    color: #555;
+    margin-top: 6px;
+}
+
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: #555;
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+/* ===== MAIN TABLE ===== */
+.main-table-card {
+    background: white;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+th, td {
+    border: 1px solid #d0d0d0;
+    padding: 7px 10px;
+    text-align: center;
+}
+
+th {
+    font-weight: bold;
+    font-size: 12px;
+}
+
+td:first-child { text-align: left; font-weight: 500; }
+
+.total-row td {
+    background: #e89c2f;
+    font-weight: bold;
+    color: #333;
+}
+
+/* ===== NIVEL CARDS ===== */
+/* quitar efecto tarjeta */
+.nivel-card {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+.nivel-title {
+    margin: 15px 0 5px; /* menos espacio */
+}
+
+.nivel-footer {
+    margin: 5px 0 10px;
+}
+.nivel-title {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+/* quitar separación visual entre tablas */
+.subtable {
+    border-collapse: collapse;
+    margin-bottom: 0; /* 🔥 clave */
+}
+
+/* línea superior para continuidad */
+
+/* ENCABEZADO */
+.subtable th {
+    font-weight: normal;
+    font-size: 12px;
+    color: #333;
+    padding: 6px 8px;
+}
+
+/* CELDAS */
+.subtable td {
+    padding: 6px 8px;
+border-bottom: 1px solid #bfbfbf;
+}
+
+/* LÍNEAS VERTICALES SUAVES */
+.subtable td:not(:last-child),
+.subtable th:not(:last-child) {
+    border-right: 1px solid #d9d9d9;
+}
+/* AZUL */
+.nivel-azul td {
+    background-color: #7fa6c6;
+}
+.nivel-title {
+    font-weight: normal;
+    font-size: 15px;
+    color: #333;
+}
+/* VERDE */
+.nivel-verde td {
+    background-color: #8edc65;
+}
+
+/* BLANCO */
+.nivel-blanco td {
+    background-color: #ffffff;
+}
+.nivel-title {
+    font-size: 16px;
+    margin: 20px 0 10px;
+}
+/* quitar bordes fuertes */
+.subtable td, .subtable th {
+    border-left: none;
+    border-right: none;
+}
+
+
+.notif-box{
+    width:320px;
+    right:-120px; /* mueve hacia el centro como en la imagen */
+    padding:0;
+}
+
+/* HEADER */
+.notif-header{
+    background:#f5f5f5;
+    padding:10px;
+    font-size:14px;
+    border-bottom:1px solid #ddd;
+    color:#888;
+}
+/* MENSAJE VACÍO */
+.notif-empty{
+    border:1px solid #bcdff1;
+    background:#e9f5fb;
+    padding:20px;
+    text-align:center;
+    color:#31708f;
+    border-radius:3px;
+}
+
+.notif-empty i{
+    font-size:25px;
+    display:block;
+    margin-bottom:10px;
+}
+
+.nivel-footer {
+    text-align: right;
+    font-size: 11px;
+    color: #555;
+    margin-top: 6px;
+}
+/* PERFIL */
+.profile{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+    padding:5px 10px;
+    border-radius:3px;
+}
+
+.profile img{
+    width:30px;
+    height:30px;
+}
+/* Estados de materias */
+.aprobado td {
+    background-color: #d6e8f5; /* azul */
+}
+
+.actual td {
+    background-color: #d4edda; /* verde */
+}
+
+.no-tomada td {
+    background-color: #ffffff; /* blanco */
+}
+</style>
+</head>
+<body>
+
+   <!-- HEADER -->
+<div class="header">
+    
+    <div class="logo">
+        <img src="presentacion.png">
+        <div>
+            <div><b>ULEAM</b></div>
+            <small>Universidad Laica Eloy Alfaro de Manabí</small>
+        </div>
+    </div>
+
+    <div class="top-menu">
+
+        <!-- SERVICIOS -->
+        <div class="menu-item" onclick="toggleMenu('servicios')">
+            Servicios
+            <div class="dropdown" id="servicios">
+                <a href="notas1.html"><i class="fa-solid fa-user"></i> Mis notas</a>
+                <a href="#"><i class="fa-solid fa-file"></i> Hoja de vida</a>
+                <a href="#"><i class="fa-solid fa-graduation-cap"></i> Materias abiertas</a>
+                <a href="#"><i class="fa-regular fa-square-check"></i> Registro</a>
+                <a href="calendario.html"><i class="fa-solid fa-calendar-days"></i> Calendario</a>
+                <a href="#"><i class="fa-solid fa-briefcase"></i> Banco laboral</a>
+                <a href="#"><i class="fa-solid fa-calendar"></i> Eventos</a>
+                <a href="#"><i class="fa-solid fa-clipboard-list"></i> Estado Heteroevaluaciones</a>
+            </div>
+        </div>
+        <div class="menu-item" onclick="toggleMenu('notificaciones')">
+    <i class="fa-regular fa-bell"></i>
+
+    <div class="dropdown notif-box" id="notificaciones">
+        
+        <div class="notif-header">
+            Notificaciones
+        </div>
+
+        <div class="notif-content">
+            <div class="notif-empty">
+                <i class="fa-regular fa-face-frown"></i>
+                <p>No hay notificaciones que leer!</p>
+            </div>
+        </div>
+
+        <div class="notif-footer">
+            <a href="#"><i class="fa fa-bars"></i> Ver todas las notificaciones.</a>
+        </div>
+
+    </div>
+</div>
+
+        <!-- PERFIL -->
+        <div class="menu-item profile" onclick="toggleMenu('perfil')">
+            <img src="steven.png">
+            <span>Gregory Steven Rivadeneira</span>
+
+        <div class="dropdown" id="perfil">
+            <a href="#"><i class="fa fa-user"></i> Perfil</a>
+            <a href="#"><i class="fa-solid fa-graduation-cap"></i>Cambiar clave</a>
+        </div>
+        </div>
+        <div href="index.html" id="salir" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+
+    </div>
+</div>
+
+
+<!-- NAV BAR -->
+<div class="nav-bar">
+    <a href="inicio1.html"><i class="fa-solid fa-house"></i></a>
+    <a href="#" class="active"><i class="fa-solid fa-list"></i> Notas</a>
+</div>
+
+<!-- MAIN CONTAINER -->
+<div class="container">
+
+    <!-- Title Card -->
+    <div class="card">
+        <div class="card-header-row">
+            <div class="card-header-left">
+                <div class="icon-circle"><i class="fa-solid fa-graduation-cap"></i></div>
+                <div>
+                    <div class="card-title">Notas</div>
+                    <div class="card-subtitle">Revise el resumen de notas y créditos acumulados.</div>
+                </div>
+            </div>
+            <button class="btn-print"><i class="fa-solid fa-print"></i> IMPRIMIR</button>
+        </div>
+    </div>
+
+    <!-- Info Card -->
+    <div class="card info-card">
+        <div class="info-left">
+            <div class="icon-circle"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div class="info-text">
+                <div><b>Nombre:</b> GREGORY STEVEN RIVADENEIRA MERA</div>
+                <div><b>Carrera:</b> MEDICINA 2024 -NS.</div>
+            </div>
+        </div>
+        <div class="materias-count"><b>Materias registradas:</b> 6</div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+        <!-- % Créditos -->
+        <div class="chart-card">
+            <div class="chart-title">% Créditos aprobados</div>
+            <div class="chart-container">
+                <canvas id="c1"></canvas>
+            </div>
+            <div class="chart-value-label"><b>Valor exacto: 12.37%</b></div>
+        </div>
+
+        <!-- % Materias -->
+        <div class="chart-card">
+            <div class="chart-title">% Materias aprobadas</div>
+            <div class="chart-container">
+                <canvas id="c2"></canvas>
+            </div>
+            <div class="chart-value-label"><b>Valor exacto: 15.38%</b></div>
+        </div>
+
+        <!-- Pensum -->
+        <div class="chart-card">
+            <div class="chart-title">Materias del pensum</div>
+            <div class="chart-container">
+                <canvas id="c3"></canvas>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#4e79a7;"></div>
+                    Aprobadas
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#59a14f;"></div>
+                    Período Actual
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#e15759;"></div>
+                    No Tomadas
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Table -->
+    <<div class="main-table-card">
+    <table>
+        <thead>
+            <tr>
+                <th rowspan="2" style="text-align:left;">EJES DE FORMACIÓN</th>
+                <th colspan="3">CRÉDITOS</th>
+                <th colspan="3">MATERIAS</th>
+            </tr>
+            <tr>
+                <th>Requeridos</th>
+                <th>Aprobados</th>
+                <th>Faltantes</th>
+                <th>Requeridos</th>
+                <th>Aprobados</th>
+                <th>Faltantes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>UNIDAD BÁSICA</td>
+                <td>900</td><td>900</td><td>0</td>
+                <td>6</td><td>6</td><td>0</td>
+            </tr>
+            <tr>
+                <td>UNIDAD BÁSICA</td>
+                <td>900</td><td>728</td><td>172</td>
+                <td>5</td><td>4</td><td>1</td>
+            </tr>
+            <tr>
+                <td>UNIDAD BÁSICA</td>
+                <td>900</td><td>0</td><td>900</td>
+                <td>6</td><td>0</td><td>6</td>
+            </tr>
+            <tr>
+                <td>UNIDAD BÁSICA</td>
+                <td>900</td><td>0</td><td>900</td>
+                <td>5</td><td>0</td><td>5</td>
+            </tr>
+            <tr>
+                <td>UNIDAD PROFESIONAL</td>
+                <td>900</td><td>0</td><td>900</td>
+                <td>6</td><td>0</td><td>6</td>
+            </tr>
+            <tr>
+                <td>UNIDAD PROFESIONAL</td>
+                <td>900</td><td>0</td><td>900</td>
+                <td>6</td><td>0</td><td>6</td>
+            </tr>
+            <tr>
+                <td>UNIDAD PROFESIONAL</td>
+                <td>900</td><td>0</td><td>900</td>
+                <td>7</td><td>0</td><td>7</td>
+            </tr>
+            <tr>
+                <td>UNIDAD PROFESIONAL</td>
+                <td>900</td><td>0</td><td>900</td>
+                <td>7</td><td>0</td><td>7</td>
+            </tr>
+            <tr>
+                <td>REQUISITOS DE TITULACIÓN</td>
+                <td>144</td><td>0</td><td>144</td>
+                <td>1</td><td>0</td><td>1</td>
+            </tr>
+            <tr>
+                <td>UNIDAD DE TITULACIÓN</td>
+                <td>756</td><td>0</td><td>756</td>
+                <td>5</td><td>0</td><td>5</td>
+            </tr>
+            <tr>
+                <td>UNIDAD DE TITULACIÓN</td>
+                <td>756</td><td>0</td><td>756</td>
+                <td>5</td><td>0</td><td>5</td>
+            </tr>
+            <tr>
+                <td>REQUISITOS DE TITULACIÓN</td>
+                <td>144</td><td>0</td><td>144</td>
+                <td>1</td><td>0</td><td>1</td>
+            </tr>
+            <tr>
+                <td>INTERNADO</td>
+                <td>4160</td><td>0</td><td>4160</td>
+                <td>5</td><td>0</td><td>5</td>
+            </tr>
+            <tr class="total-row">
+                <td>TOTALES</td>
+                <td>13160</td><td>1628</td><td>11532</td>
+                <td>65</td><td>10</td><td>55</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+   <div class="nivel-card">
+    <div class="nivel-title"><b>Nivel: 1 </b></div>
+    <table class="subtable">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th style="text-align:left;">Materia</th>
+                <th>1P</th>
+                <th>2P</th>
+                <th>Recup</th>
+                <th>Final</th>
+                <th>Estado</th>
+                <th>Créditos</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="aprobado">
+                <td>9901V01-R22</td>
+                <td style="text-align:left;">CÁTEDRA ALFARO</td>
+                <td>9.73</td><td>9.83</td><td>-</td><td>19.56</td>
+                <td>Aprobado</td><td>96/96</td>
+            </tr>
+            <tr class="aprobado">
+                <td>MED-105-R</td>
+                <td style="text-align:left;">LECTURA COMPRENSIVA Y REDACCIÓN CIENTÍFICA</td>
+                <td>9.13</td><td>9.48</td><td>-</td><td>18.61</td>
+                <td>Aprobado</td><td>108/108</td>
+            </tr>
+            <tr class="aprobado">
+                <td>MED-102-R</td>
+                <td style="text-align:left;">EMBRIOLOGÍA MÉDICA</td>
+                <td>6.51</td><td>7.37</td><td>7.1</td><td>14.04</td>
+                <td>Aprobado</td><td>144/144</td>
+            </tr>
+            <tr class="aprobado">
+                <td>MED-101-R</td>
+                <td style="text-align:left;">MORFOFISIOLOGÍA I</td>
+                <td>6.33</td><td>6.45</td><td>8</td><td>14.39</td>
+                <td>Aprobado</td><td>300/300</td>
+            </tr>
+            <tr class="aprobado">
+                <td>MED-103-R</td>
+                <td style="text-align:left;">HISTOLOGÍA</td>
+                <td>7.31</td><td>9.65</td><td>-</td><td>16.96</td>
+                <td>Aprobado</td><td>180/180</td>
+            </tr>
+            <tr class="aprobado">
+                <td>MED-104-R</td>
+                <td style="text-align:left;">SOCIOANTROPOLOGÍA</td>
+                <td>10</td><td>10</td><td>-</td><td>20</td>
+                <td>Aprobado</td><td>72/72</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="nivel-footer">Créditos: 900 / 900</div>
+</div>
+<div class="nivel-card">
+    <div class="nivel-title"><b>Nivel: 2 </b></div>
+    <table class="subtable">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th style="text-align:left;">Materia</th>
+                <th>1P</th>
+                <th>2P</th>
+                <th>Recup</th>
+                <th>Final</th>
+                <th>Estado</th>
+                <th>Créditos</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="aprobado">
+                <td>MED-204-R</td>
+                <td style="text-align:left;">MORFOFISIOLOGÍA II</td>
+                <td>6.57</td><td>7.66</td><td>-</td><td>14.23</td>
+                <td>Aprobado</td><td>318/318</td>
+            </tr>
+            <tr class="aprobado">
+                <td>MED-205-R</td>
+                <td style="text-align:left;">GENÉTICA</td>
+                <td>7.82</td><td>8.4</td><td>-</td><td>16.22</td>
+                <td>Aprobado</td><td>138/138</td>
+            </tr>
+            <tr class="aprobado">
+                <td>MED-206-R</td>
+                <td style="text-align:left;">BIOSEGURIDAD Y MEDIO AMBIENTE</td>
+                <td>8.25</td><td>9.05</td><td>-</td><td>17.3</td>
+                <td>Aprobado</td><td>110/110</td>
+            </tr>
+            <tr class="aprobado">
+                <td>MED-207-R</td>
+                <td style="text-align:left;">METODOLOGÍA DE LA INVESTIGACIÓN</td>
+                <td>8.74</td><td>9.5</td><td>-</td><td>18.24</td>
+                <td>Aprobado</td><td>162/162</td>
+            </tr>
+            <tr class="aprobado">
+                <td>MED-2023-R</td>
+                <td style="text-align:left;">BIOQUÍMICA</td>
+                <td>8.25</td><td>9.05</td><td>-</td><td>17.3</td>
+                <td>Aprobado</td><td>172/172</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="nivel-footer">Créditos: 900 / 900</div>
+</div>
+<div class="nivel-card">
+    <div class="nivel-title"><b>Nivel: 3 </b></div>
+    <table class="subtable">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th style="text-align:left;">Materia</th>
+                <th>Estado</th>
+                <th>Créditos</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="actual"><td>MED-301-R</td><td style="text-align:left;">FISIOPATOLOGÍA I</td><td>Periodo actual</td><td>180/180</td></tr>
+            <tr class="actual"><td>MED-302-R</td><td style="text-align:left;">BIOLOGÍA MOLECULAR APLICADA</td><td>Periodo actual</td><td>144/144</td></tr>
+            <tr class="actual"><td>MED-303-R</td><td style="text-align:left;">ADMINISTRACIÓN DE SALUD Y GERENCIA HOSPITALARIA</td><td>Periodo actual</td><td>96/96</td></tr>
+            <tr class="actual"><td>MED-304-R</td><td style="text-align:left;">MICROBIOLOGÍA MÉDICA</td><td>Periodo actual</td><td>228/228</td></tr>
+            <tr class="actual"><td>MED-306-R</td><td style="text-align:left;">INVESTIGACIÓN BASADA EN LA EVIDENCIA Y DE PRECISIÓN</td><td>Periodo actual</td><td>144/144</td></tr>
+            <tr class="actual"><td>MED-305-R</td><td style="text-align:left;">BIOESTADÍSTICA APLICADA</td><td>Periodo actual</td><td>108/108</td></tr>
+        </tbody>
+    </table>
+    <div class="nivel-footer">Créditos: 0 / 900</div>
+</div>
+<div class="nivel-card">
+    <div class="nivel-title"><b>Nivel: 4 </b></div>
+    <table class="subtable">
+        <tbody>
+            <tr class="no-tomada"><td>MED-401-R</td><td style="text-align:left;">FISIOPATOLOGÍA II</td><td>No tomada</td><td>200</td></tr>
+            <tr class="no-tomada"><td>MED-402-R</td><td style="text-align:left;">INMUNOLOGÍA CLÍNICA</td><td>No tomada</td><td>134</td></tr>
+            <tr class="no-tomada"><td>MED-403-R</td><td style="text-align:left;">SALUD PÚBLICA</td><td>No tomada</td><td>170</td></tr>
+            <tr class="no-tomada"><td>MED-404-R</td><td style="text-align:left;">ANATOMÍA PATOLÓGICA</td><td>No tomada</td><td>158</td></tr>
+            <tr class="no-tomada"><td>MED-405-R</td><td style="text-align:left;">SEMIOTECNIA Y BASES SEMIOLÓGICAS</td><td>No tomada</td><td>238</td></tr>
+        </tbody>
+    </table>
+    <div class="nivel-footer">Créditos: 0 / 900</div>
+</div><div class="nivel-card">
+    <div class="nivel-title"><b>Nivel: 5 </b></div>
+    <table class="subtable">
+        <tbody>
+            <tr class="no-tomada"><td>MED-501-R</td><td style="text-align:left;">SEMIOLOGÍA</td><td>No tomada</td><td>162</td></tr>
+            <tr class="no-tomada"><td>MED-502-R</td><td style="text-align:left;">DIAGNÓSTICO POR IMÁGENES</td><td>No tomada</td><td>180</td></tr>
+            <tr class="no-tomada"><td>MED-503R3</td><td style="text-align:left;">EPIDEMIOLOGÍA</td><td>No tomada</td><td>162</td></tr>
+            <tr class="no-tomada"><td>MED-504-R</td><td style="text-align:left;">FARMACOLOGÍA I</td><td>No tomada</td><td>198</td></tr>
+            <tr class="no-tomada"><td>MED-505-R</td><td style="text-align:left;">INNOVACIÓN Y TECNOLOGÍA</td><td>No tomada</td><td>72</td></tr>
+        </tbody>
+    </table>
+    <div class="nivel-footer">Créditos: 0 / 900</div>
+</div>
+<div class="nivel-card">
+    <div class="nivel-title"><b>Nivel: 6 </b></div>
+    <table class="subtable">
+        <tbody>
+            <tr class="no-tomada"><td>MED-601-R</td><td style="text-align:left;">GASTROENTEROLOGÍA</td><td>No tomada</td><td>145</td></tr>
+            <tr class="no-tomada"><td>MED-602-R</td><td style="text-align:left;">HEMATOLOGÍA</td><td>No tomada</td><td>143</td></tr>
+            <tr class="no-tomada"><td>MED-603-R</td><td style="text-align:left;">NEUMOLOGÍA</td><td>No tomada</td><td>143</td></tr>
+            <tr class="no-tomada"><td>MED-604-R</td><td style="text-align:left;">INFECTOLOGÍA Y MEDICINA TROPICAL</td><td>No tomada</td><td>143</td></tr>
+            <tr class="no-tomada"><td>MED-605-R</td><td style="text-align:left;">DERMATOLOGÍA</td><td>No tomada</td><td>143</td></tr>
+            <tr class="no-tomada"><td>MED-606-R</td><td style="text-align:left;">FARMACOLOGÍA II</td><td>No tomada</td><td>183</td></tr>
+        </tbody>
+    </table>
+    <div class="nivel-footer">Créditos: 0 / 900</div>
+</div>
+<div class="nivel-card">
+    <div class="nivel-title"><b>Nivel: 7</b></div>
+    <table class="subtable">
+        <tbody>
+            <tr class="no-tomada"><td>MED-701-R</td><td style="text-align:left;">EMERGENCIA Y DESASTRES</td><td>No tomada</td><td>128</td></tr>
+            <tr class="no-tomada"><td>MED-702-R</td><td style="text-align:left;">CARDIOLOGÍA</td><td>No tomada</td><td>128</td></tr>
+            <tr class="no-tomada"><td>MED-703-R</td><td style="text-align:left;">ENDOCRINOLOGÍA Y NUTRICIÓN</td><td>No tomada</td><td>128</td></tr>
+            <tr class="no-tomada"><td>MED-704-R</td><td style="text-align:left;">NEUROLOGÍA</td><td>No tomada</td><td>128</td></tr>
+            <tr class="no-tomada"><td>MED-705-R</td><td style="text-align:left;">NEFROLOGÍA</td><td>No tomada</td><td>128</td></tr>
+            <tr class="no-tomada"><td>MED-706-R</td><td style="text-align:left;">NEUROCIENCIAS Y SALUD MENTAL</td><td>No tomada</td><td>128</td></tr>
+            <tr class="no-tomada"><td>MED-SIM707</td><td style="text-align:left;">DIAGNÓSTICO CLÍNICO</td><td>No tomada</td><td>132</td></tr>
+        </tbody>
+    </table>
+    <div class="nivel-footer">Créditos: 0 / 900</div>
+</div>
+<div class="nivel-card">
+    <div class="nivel-title"><b>Nivel: 8</b></div>
+    <table class="subtable">
+        <tbody>
+            <tr class="no-tomada"><td>MED-801-R</td><td style="text-align:left;">CIRUGÍA GENERAL</td><td>No tomada</td><td>170</td></tr>
+            <tr class="no-tomada"><td>MED-802-R</td><td style="text-align:left;">TRAUMATOLOGÍA Y ORTOPEDIA</td><td>No tomada</td><td>130</td></tr>
+            <tr class="no-tomada"><td>MED-803-R</td><td style="text-align:left;">OFTALMOLOGÍA</td><td>No tomada</td><td>116</td></tr>
+            <tr class="no-tomada"><td>MED-804-R</td><td style="text-align:left;">UROLOGÍA</td><td>No tomada</td><td>116</td></tr>
+            <tr class="no-tomada"><td>MED-805-R</td><td style="text-align:left;">OTORRINOLARINGOLOGÍA</td><td>No tomada</td><td>134</td></tr>
+            <tr class="no-tomada"><td>MED-SIM806</td><td style="text-align:left;">SIMULACIÓN MÉDICA I</td><td>No tomada</td><td>126</td></tr>
+            <tr class="no-tomada"><td>MED-807-R</td><td style="text-align:left;">INVESTIGACIÓN EN SALUD</td><td>No tomada</td><td>108</td></tr>
+        </tbody>
+    </table>
+    <div class="nivel-footer">Créditos: 0 / 900</div>
+</div>
+<div class="nivel-card">
+    <div class="nivel-title"><b>Nivel: 9</b></div>
+    <table class="subtable">
+        <tbody>
+            <tr class="no-tomada"><td>FIP-6302-1</td><td style="text-align:left;">TRABAJO DE INTEGRACIÓN CURRICULAR (DISEÑO)</td><td>No tomada</td><td>144</td></tr>
+        </tbody>
+    </table>
+    <div class="nivel-footer">Créditos: 0 / 144</div>
+</div>
+<div class="nivel-card">
+    <div class="nivel-title"><b>Unidad de Titulación</b></div>
+    <table class="subtable">
+        <tbody>
+            <tr class="no-tomada"><td>MED-901-R</td><td style="text-align:left;">PEDIATRÍA</td><td>No tomada</td><td>182</td></tr>
+            <tr class="no-tomada"><td>MED-902-R</td><td style="text-align:left;">GERIATRÍA Y GERONTOLOGÍA</td><td>No tomada</td><td>144</td></tr>
+            <tr class="no-tomada"><td>MED-903-R</td><td style="text-align:left;">BIOÉTICA</td><td>No tomada</td><td>108</td></tr>
+            <tr class="no-tomada"><td>MED-904-R</td><td style="text-align:left;">MEDICINA PALIATIVA</td><td>No tomada</td><td>142</td></tr>
+            <tr class="no-tomada"><td>MED-SIM905</td><td style="text-align:left;">SIMULACIÓN MÉDICA II</td><td>No tomada</td><td>180</td></tr>
+        </tbody>
+    </table>
+</div>
+<div class="nivel-card">
+    <div class="nivel-title"><b>Nivel: 10</b></div>
+    <table class="subtable">
+        <tbody>
+            <tr class="no-tomada"><td>MED-1001-R</td><td style="text-align:left;">GINECOLOGÍA</td><td>No tomada</td><td>144</td></tr>
+            <tr class="no-tomada"><td>MED-1002-R</td><td style="text-align:left;">OBSTETRICIA</td><td>No tomada</td><td>144</td></tr>
+            <tr class="no-tomada"><td>MED-1003-R</td><td style="text-align:left;">MEDICINA LEGAL</td><td>No tomada</td><td>144</td></tr>
+            <tr class="no-tomada"><td>MED-1004-R</td><td style="text-align:left;">NEONATOLOGÍA</td><td>No tomada</td><td>144</td></tr>
+            <tr class="no-tomada"><td>MED-SIM1005</td><td style="text-align:left;">SIMULACIÓN MÉDICA III</td><td>No tomada</td><td>180</td></tr>
+        </tbody>
+    </table>
+</div>
+<div class="nivel-card">
+    <div class="nivel-title"><b>Internado</b></div>
+    <table class="subtable">
+        <tbody>
+            <tr class="no-tomada"><td>MED-IR01-R</td><td style="text-align:left;">ESPECIALIDADES QUIRÚRGICAS</td><td>No tomada</td><td>832</td></tr>
+            <tr class="no-tomada"><td>MED-IR02-R</td><td style="text-align:left;">PEDIATRÍA</td><td>No tomada</td><td>832</td></tr>
+            <tr class="no-tomada"><td>MED-IR03-R</td><td style="text-align:left;">MEDICINA COMUNITARIA</td><td>No tomada</td><td>832</td></tr>
+            <tr class="no-tomada"><td>MED-IR04-R</td><td style="text-align:left;">GINECOBSTETRICIA</td><td>No tomada</td><td>832</td></tr>
+            <tr class="no-tomada"><td>MED-IR05-R</td><td style="text-align:left;">CLÍNICA</td><td>No tomada</td><td>832</td></tr>
+        </tbody>
+    </table>
+</div>
+</div>
+
+<script>
+function toggleMenu(id) {
+    document.querySelectorAll('.dropdown').forEach(d => {
+        if (d.id !== id) d.classList.remove('show');
+    });
+    document.getElementById(id).classList.toggle('show');
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.menu-item')) {
+        document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('show'));
+    }
+});
+
+// Chart 1 - % Créditos
+new Chart(document.getElementById('c1'), {
+    type: 'doughnut',
+    data: {
+        datasets: [{
+            data: [12.37, 87.63],
+            backgroundColor: ['#20c997', '#eeeeee'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        cutout: '72%',
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        animation: { duration: 800 }
+    }
+});
+
+// Chart 2 - % Materias
+new Chart(document.getElementById('c2'), {
+    type: 'doughnut',
+    data: {
+        datasets: [{
+            data: [15.38, 84.62],
+            backgroundColor: ['#20c997', '#eeeeee'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        cutout: '72%',
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        animation: { duration: 800 }
+    }
+});
+
+// Chart 3 - Pensum
+new Chart(document.getElementById('c3'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Aprobadas', 'Período Actual', 'No Tomadas'],
+        datasets: [{
+            data: [20, 10, 70],
+            backgroundColor: ['#4e79a7', '#59a14f', '#e15759'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        cutout: '50%',
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: ctx => ` ${ctx.label}: ${ctx.parsed}%`
+                }
+            }
+        },
+        animation: { duration: 800 }
+    }
+});
+function toggleMenu(id){
+    let menu = document.getElementById(id);
+
+    // cerrar otros
+    document.querySelectorAll('.dropdown').forEach(d=>{
+        if(d.id !== id) d.style.display = 'none';
+    });
+
+    // toggle
+    menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+}
+
+function logout(){
+    alert("Sesión cerrada");
+    window.location.href="index.html"
+}
+</script>
+</body>
+</html>

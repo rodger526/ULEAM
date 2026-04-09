@@ -1,0 +1,189 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Roboto',sans-serif;
+}
+
+body{
+    background:#e9e9e9;
+}
+
+/* HEADER */
+.header{
+    background: url(header.png);
+    color:white;
+    padding:10px 40px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo img{
+    height:50px;
+}
+
+.top-menu{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    background-color: #448811;
+}
+
+.menu-item{
+    position:relative;
+    cursor:pointer;
+    padding:2px 10px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    transition:background 0.3s;
+}
+
+.menu-item:hover{
+    background:rgba(0,0,0,0.2);
+}
+/* DROPDOWN */
+.dropdown{
+    position:absolute;
+    top:50px;
+    right:0;
+    background:#f3f3f3;
+    color:#333;
+    display:none;
+    flex-direction:column;
+    border:1px solid #cfcfcf;
+    box-shadow:0 2px 4px rgba(0,0,0,0.2);
+    z-index:100;
+}
+.dropdown a{
+    padding:10px 12px;
+    text-decoration:none;
+    color:#333;
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.dropdown a:hover{
+    background:#e6e6e6;
+}
+
+/* PERFIL */
+.profile{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+    padding:5px 10px;
+    border-radius:3px;
+}
+
+.profile img{
+    width:30px;
+    height:30px;
+}
+
+/* BIENVENIDA */
+.welcome{
+    text-align: left;
+    width: auto;
+    background:#4a8f1f;
+    color:white;
+    padding:5px 400px;
+}
+
+
+
+.welcome h2{
+    font-weight: 300px;
+}
+
+.welcome small{
+    display:block;
+}
+
+/* BOTONES CENTRALES */
+.main{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin-top:40px;
+    gap:20px;
+}
+
+.main button{
+    background:#4caf50;
+    color:white;
+    border:none;
+    padding:30px;
+    width:600px;
+    font-size:35px;
+    cursor:pointer;
+    border-radius:3px;
+}
+
+.main button:hover{
+    background:#43a047;
+}
+/* CAJA DE NOTIFICACIONES */
+.notif-box{
+    width:320px;
+    right:-120px; /* mueve hacia el centro como en la imagen */
+    padding:0;
+}
+
+/* HEADER */
+.notif-header{
+    background:#f5f5f5;
+    padding:10px;
+    font-size:14px;
+    border-bottom:1px solid #ddd;
+    color:#888;
+}
+
+/* CONTENIDO */
+.notif-content{
+    padding:20px;
+    background:white;
+}
+
+/* MENSAJE VACÍO */
+.notif-empty{
+    border:1px solid #bcdff1;
+    background:#e9f5fb;
+    padding:20px;
+    text-align:center;
+    color:#31708f;
+    border-radius:3px;
+}
+
+.notif-empty i{
+    font-size:25px;
+    display:block;
+    margin-bottom:10px;
+}
+
+
+/* FOOTER */
+.notif-footer{
+    border-top:1px solid #ddd;
+    padding:10px;
+    background:#f9f9f9;
+}
+
+.notif-footer a{
+    text-decoration:none;
+    font-size:13px;
+    color:#2a7bd6;
+}
+
+.notif-footer a:hover{
+    text-decoration:underline;
+}

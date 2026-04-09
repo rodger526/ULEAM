@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Xisce</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial;
+    background: #f3f3f3;
+}
+
+/* CONTENEDOR */
+.card {
+    background: white;
+    margin: 20px auto;
+    width: 95%;
+    border: 1px solid #dcdcdc;
+}
+
+/* HEADER */
+.card-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px;
+    border-bottom:1px solid #ddd;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.subtitle {
+    font-size:12px;
+    color:#777;
+}
+
+.buttons button {
+    background:#4CAF50;
+    border:none;
+    color:white;
+    padding:5px 10px;
+    font-size:11px;
+    margin-left:5px;
+    border-radius:3px;
+}
+
+/* FILTROS */
+.filters{
+    padding:10px 15px;
+    background:#fafafa;
+    border-bottom:1px solid #ddd;
+    font-size:12px;
+}
+
+/* SEMANA */
+.week {
+    text-align: center;
+    padding: 8px;
+    background:#f9f9f9;
+    border-bottom:1px solid #ddd;
+    font-size:13px;
+}
+
+/* CALENDARIO */
+.calendar {
+    display: grid;
+    grid-template-columns: 60px repeat(7, 1fr);
+    font-size: 11px;
+}
+
+.cell {
+    border: 1px solid #e5e5e5; /* líneas visibles */
+    height: 35px;
+    position: relative;
+    box-sizing: border-box;      /* importante: que padding no expanda la celda */
+}
+/* HORAS */
+.hour {
+    background: #fafafa;
+    text-align: right;
+    padding-right: 6px;
+    color: #999;
+    font-size: 10px;
+}
+
+/* DIAS */
+.day-header {
+    background: #f1f1f1;
+    text-align: center;
+    font-weight: 600;
+    padding: 6px;
+}
+
+/* HOY */
+.today {
+    background: #f6ecd2;
+}
+
+/* EVENTOS (tipo ULEAM por hora) */
+.event {
+    position: absolute;
+    left: -1px;   /* sobrepasa un poquito la celda para “unir” color */
+    right: -1px;
+    top: -1px;
+    bottom: -1px;
+    border-radius: 0;  /* sin esquinas redondeadas */
+    padding: 0;
+    font-size: 10px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    z-index: 1; /* asegurarse que el color esté encima de las líneas */
+}
+/* TEXTO */
+.event .time {
+    font-size: 9px;
+    opacity: 0.9;
+}
+/* HEADER */
+.header{
+    background: url(header.png);
+    color:white;
+    padding:10px 40px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo img{
+    height:50px;
+}
+
+.top-menu{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    background-color: #448811;
+}
+
+.menu-item{
+    position:relative;
+    cursor:pointer;
+    padding:2px 10px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    transition:background 0.3s;
+}
+
+.menu-item:hover{
+    background:rgba(0,0,0,0.2);
+}
+
+/* ===== TOP MENU ===== */
+.top-menu {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    z-index: 1;
+    background-color: #3a7a1a;
+}
+
+.menu-item {
+    position: relative;
+    cursor: pointer;
+    padding: 0 16px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: white;
+    font-size: 13px;
+    transition: background 0.2s;
+}
+
+.menu-item:hover { background: rgba(0,0,0,0.2); }
+
+/* Notification badge */
+.notif-badge {
+    background: #e74c3c;
+    color: white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -4px;
+    margin-top: -8px;
+    position: absolute;
+    top: 12px;
+    right: 6px;
+}
+
+/* Profile pic placeholder */
+.profile-pic {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    border: 2px solid rgba(255,255,255,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: white;
+}
+
+.arrow-down { font-size: 10px; }
+
+.logout-btn {
+    padding: 0 12px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
+}
+
+.logout-btn:hover { background: rgba(0,0,0,0.2); }
+
+/* DROPDOWN */
+.dropdown {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background: #f3f3f3;
+    color: #333;
+    display: none;
+    flex-direction: column;
+    border: 1px solid #cfcfcf;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    z-index: 1000;
+    min-width: 200px;
+}
+
+.dropdown.show { display: flex; }
+
+.dropdown a {
+    padding: 10px 14px;
+    text-decoration: none;
+    color: #333;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.dropdown a:last-child { border-bottom: none; }
+.dropdown a:hover { background: #e0e0e0; }
+
+/* ===== NAV BAR ===== */
+.nav-bar {
+    background: #3a7a1a;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 36px;
+    gap: 5px;
+}
+
+.nav-bar a {
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 10px;
+    height: 36px;
+    transition: background 0.2s;
+}
+
+.nav-bar a:hover, .nav-bar a.active {
+    background: rgba(0,0,0,0.2);
+}
+
+/* ===== MAIN CONTENT ===== */
+.container {
+    width: 82%;
+    margin: 18px auto;
+}
+
+/* ===== CARD ===== */
+.card {
+    background: #fff;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+}
+
+/* ===== CARD HEADER (Notas title) ===== */
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #6c7ae0;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.card-title {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 2px;
+    background: #6fbf73;
+}
+
+.card-subtitle {
+    font-size: 11px;
+    color: #777;
+}
+
+.btn-print {
+    background: #4a89dc;
+    color: white;
+    border: none;
+    padding: 7px 14px;
+    font-size: 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-print:hover { background: #3a79cc; }
+
+/* ===== INFO CARD ===== */
+.info-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.info-text { font-size: 13px; line-height: 1.6; }
+
+.materias-count {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+/* ===== CHARTS GRID ===== */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.chart-card {
+    background: white;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    padding: 14px 16px;
+    text-align: center;
+}
+
+.chart-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.chart-container {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 8px;
+}
+
+.chart-value-label {
+    font-size: 12px;
+    color: #555;
+    margin-top: 6px;
+}
+
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: #555;
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+/* ===== MAIN TABLE ===== */
+.main-table-card {
+    background: white;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+th, td {
+    border: 1px solid #d0d0d0;
+    padding: 7px 10px;
+    text-align: center;
+}
+
+th {
+    background: #e8e8e8;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+td:first-child { text-align: left; font-weight: 500; }
+
+.total-row td {
+    background: #e89c2f;
+    font-weight: bold;
+    color: #333;
+}
+
+/* ===== NIVEL CARDS ===== */
+.nivel-card {
+    background: white;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+}
+
+.nivel-title {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.subtable td {
+    background: #d6e8f5;
+    color: #222;
+}
+
+.subtable th {
+    background: #e8e8e8;
+}
+.notif-box{
+    width:320px;
+    right:-120px; /* mueve hacia el centro como en la imagen */
+    padding:0;
+}
+
+/* HEADER */
+.notif-header{
+    background:#f5f5f5;
+    padding:10px;
+    font-size:14px;
+    border-bottom:1px solid #ddd;
+    color:#888;
+}
+/* MENSAJE VACÍO */
+.notif-empty{
+    border:1px solid #bcdff1;
+    background:#e9f5fb;
+    padding:20px;
+    text-align:center;
+    color:#31708f;
+    border-radius:3px;
+}
+
+.notif-empty i{
+    font-size:25px;
+    display:block;
+    margin-bottom:10px;
+}
+
+.nivel-footer {
+    text-align: right;
+    font-size: 11px;
+    color: #555;
+    margin-top: 6px;
+}
+/* PERFIL */
+.profile{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+    padding:5px 10px;
+    border-radius:3px;
+}
+
+.profile img{
+    width:30px;
+    height:30px;
+}
+.event .name {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: center;      /* centra horizontal */
+    margin-top: 2px;         /* baja un poquito */
+}
+.calendar-icon {
+    width: 42px;
+    height: 42px;
+    background: #66bb6a;
+   border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar-icon i {
+    color: white;
+    font-size: 16px;
+}
+/* COLORES */
+.purple-dark { background: #5B3A8E; }     /* INVESTIGACION */
+.purple { background: #6C4BAE; }          /* variación morada */
+.blue { background: #3F51B5; }            /* MICROBIOLOGÍA */
+.blue-light { background: #6FA8C9; }      /* BIOESTADÍSTICA */
+.blue-strong { background: #3C4FD1; }     /* MICROBIOLOGÍA (más intenso) */
+.gray-dark { background: #4A4A4A; }       /* BIOLOGÍA */
+.gray { background: #5A5A5A; }            /* variación gris */
+.purple-gray { background: #5E5A8C; }     /* FISIOPATOLOGÍA I */
+.pink-purple { background: #8E5A8C; }     /* ADMINISTRACIÓN */
+.background { background: #F2F2F2; }      /* fondo general */
+.grid { background: #E0E0E0; }            /* líneas de la grilla */
+
+</style>
+</head>
+
+<body>
+
+   <!-- HEADER -->
+<div class="header">
+    
+    <div class="logo">
+        <img src="presentacion.png">
+        <div>
+            <div><b>ULEAM</b></div>
+            <small>Universidad Laica Eloy Alfaro de Manabí</small>
+        </div>
+    </div>
+
+    <div class="top-menu">
+
+        <!-- SERVICIOS -->
+        <div class="menu-item" onclick="toggleMenu('servicios')">
+            Servicios
+            <div class="dropdown" id="servicios">
+                <a href="notas1.html"><i class="fa-solid fa-user"></i> Mis notas</a>
+                <a href="#"><i class="fa-solid fa-file"></i> Hoja de vida</a>
+                <a href="#"><i class="fa-solid fa-graduation-cap"></i> Materias abiertas</a>
+                <a href="#"><i class="fa-regular fa-square-check"></i> Registro</a>
+                <a href="calendario.html"><i class="fa-solid fa-calendar-days"></i> Calendario</a>
+                <a href="#"><i class="fa-solid fa-briefcase"></i> Banco laboral</a>
+                <a href="#"><i class="fa-solid fa-calendar"></i> Eventos</a>
+                <a href="#"><i class="fa-solid fa-clipboard-list"></i> Estado Heteroevaluaciones</a>
+            </div>
+        </div>
+        <div class="menu-item" onclick="toggleMenu('notificaciones')">
+    <i class="fa-regular fa-bell"></i>
+
+    <div class="dropdown notif-box" id="notificaciones">
+        
+        <div class="notif-header">
+            Notificaciones
+        </div>
+
+        <div class="notif-content">
+            <div class="notif-empty">
+                <i class="fa-regular fa-face-frown"></i>
+                <p>No hay notificaciones que leer!</p>
+            </div>
+        </div>
+
+        <div class="notif-footer">
+            <a href="#"><i class="fa fa-bars"></i> Ver todas las notificaciones.</a>
+        </div>
+
+    </div>
+</div>
+
+        <!-- PERFIL -->
+        <div class="menu-item profile" onclick="toggleMenu('perfil')">
+            <img src="steven.png">
+            <span>Gregory Steven Rivadeneira</span>
+
+        <div class="dropdown" id="perfil">
+            <a href="#"><i class="fa fa-user"></i> Perfil</a>
+            <a href="#"><i class="fa-solid fa-graduation-cap"></i>Cambiar clave</a>
+        </div>
+        </div>
+        <div href="index.html" id="salir" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+
+    </div>
+</div>
+<!-- NAV BAR -->
+<div class="nav-bar">
+    <a href="inicio1.html"><i class="fa-solid fa-house"></i></a>
+    <a href="#" class="active"><i class="fa-solid fa-calendar-days"></i> Notas</a>
+</div>
+
+<div class="card">
+
+<div class="card-header">
+    
+    <div style="display:flex; align-items:center; gap:12px;">
+
+        <div class="calendar-icon">
+            <i class="fa-solid fa-calendar-days"></i>
+        </div>
+
+        <div>
+            <div class="title">Calendario</div>
+            <div class="subtitle">Revise el horario de los cursos registrados.</div>
+        </div>
+
+    </div>
+
+    <div class="buttons">
+        <button>MES</button>
+        <button>SEMANA</button>
+        <button>DÍA</button>
+    </div>
+</div>
+
+<div class="filters">
+    Filtrar periodo:
+    <select>
+        <option>2026-1 PERIODO ORDINARIO</option>
+    </select>
+</div>
+
+<div class="week">Mar 15 — 21 2026</div>
+
+<div class="calendar" id="calendar"></div>
+
+</div>
+
+<script>
+
+const dias = ["Dom 3/15","Lun 3/16","Mar 3/17","Mié 3/18","Jue 3/19","Vie 3/20","Sáb 3/21"];
+const horas = Array.from({length: 24}, (_, i) => i);
+
+/* 🔥 TUS HORARIOS (SIN CAMBIOS) */
+const eventos = [
+
+  { dia: 1, hora: 8, dur: 2, text: "INVESTIGACIÓN BASADA EN LA", color: "purple-dark" },
+  { dia: 1, hora: 11, dur: 2, text: "MICROBIOLOGÍA MÉDICA", color: "blue-strong" },
+  { dia: 1, hora: 14, dur: 2, text: "BIOLOGÍA MOLECULAR APLICADA", color: "purple" },
+  { dia: 1, hora: 18, dur: 2, text: "BIOESTADÍSTICA APLICADA", color: "blue-light" },
+
+  { dia: 2, hora: 8, dur: 2, text: "BIOESTADÍSTICA APLICADA", color: "blue-light" },
+  { dia: 2, hora: 10, dur: 3, text: "MICROBIOLOGÍA MÉDICA", color: "blue-strong" },
+  { dia: 2, hora: 14, dur: 3, text: "BIOLOGÍA MOLECULAR APLICADA", color: "purple" },
+  { dia: 2, hora: 17, dur: 3, text: "INVESTIGACIÓN BASADA EN LA", color: "purple-dark" },
+
+  { dia: 3, hora: 8, dur: 3, text: "MICROBIOLOGÍA MÉDICA", color: "blue-strong" },
+  { dia: 3, hora: 14, dur: 4, text: "FISIOPATOLOGÍA I", color: "purple-gray" },
+
+  { dia: 4, hora: 8, dur: 2, text: "INVESTIGACIÓN BASADA EN LA ", color: "purple-dark" },
+  { dia: 4, hora: 11, dur: 2, text: "BIOESTADÍSTICA APLICADA", color: "blue-light" },
+  { dia: 4, hora: 14, dur: 4, text: "FISIOPATOLOGÍA I", color: "purple-gray" },
+  { dia: 4, hora: 18, dur: 2, text: "ADMINISTRACIÓN DE SALUD Y ", color: "pink-purple" },
+
+  { dia: 5, hora: 10, dur: 3, text: "ADMINISTRACIÓN DE SALUD Y ", color: "pink-purple" },
+  { dia: 5, hora: 14, dur: 2, text: "BIOLOGÍA MOLECULAR APLICADA", color: "purple" },
+  { dia: 5, hora: 16, dur: 2, text: "ADMINISTRACIÓN DE SALUD Y ", color: "pink-purple" },
+
+];
+
+const cal = document.getElementById("calendar");
+
+/* ENCABEZADO */
+cal.innerHTML += `<div class="cell"></div>`;
+dias.forEach(d => {
+    cal.innerHTML += `<div class="cell day-header">${d}</div>`;
+});
+
+/* FORMATO HORA */
+const format = h =>
+    h===0?"12:00am":
+    h<12? h+":00am":
+    h===12?"12:00pm":
+    (h-12)+":00pm";
+
+/* HOY */
+const hoy = 5;
+
+/* GENERAR CALENDARIO */
+horas.forEach(h => {
+
+    let horaTexto =
+        h===0?"12am":
+        h<12? h+"am":
+        h===12?"12pm":
+        (h-12)+"pm";
+
+    cal.innerHTML += `<div class="cell hour">${horaTexto}</div>`;
+
+    dias.forEach((d, i) => {
+
+        const cell = document.createElement("div");
+        cell.className = "cell";
+
+        if (i === hoy) cell.classList.add("today");
+
+        eventos.forEach(ev => {
+
+            for (let k = 0; k < ev.dur; k++) {
+
+                if (ev.dia === i && (ev.hora + k) === h) {
+
+                    const e = document.createElement("div");
+                    e.className = `event ${ev.color}`;
+
+                    const inicio = ev.hora + k;
+                    const fin = inicio + 1;
+
+                    e.innerHTML = `
+                        <div class="time">${format(inicio)} - ${format(fin)}</div>
+                        <div class="name">${ev.text}</div>
+                    `;
+
+                    cell.appendChild(e);
+                }
+            }
+
+        });
+
+        cal.appendChild(cell);
+    });
+
+});
+function toggleMenu(id) {
+    document.querySelectorAll('.dropdown').forEach(d => {
+        if (d.id !== id) d.classList.remove('show');
+    });
+    document.getElementById(id).classList.toggle('show');
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.menu-item')) {
+        document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('show'));
+    }
+});
+
+// Chart 1 - % Créditos
+new Chart(document.getElementById('c1'), {
+    type: 'doughnut',
+    data: {
+        datasets: [{
+            data: [12.37, 87.63],
+            backgroundColor: ['#20c997', '#eeeeee'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        cutout: '72%',
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        animation: { duration: 800 }
+    }
+});
+
+// Chart 2 - % Materias
+new Chart(document.getElementById('c2'), {
+    type: 'doughnut',
+    data: {
+        datasets: [{
+            data: [15.38, 84.62],
+            backgroundColor: ['#20c997', '#eeeeee'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        cutout: '72%',
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        animation: { duration: 800 }
+    }
+});
+
+// Chart 3 - Pensum
+new Chart(document.getElementById('c3'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Aprobadas', 'Período Actual', 'No Tomadas'],
+        datasets: [{
+            data: [20, 10, 70],
+            backgroundColor: ['#4e79a7', '#59a14f', '#e15759'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        cutout: '50%',
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: ctx => ` ${ctx.label}: ${ctx.parsed}%`
+                }
+            }
+        },
+        animation: { duration: 800 }
+    }
+});
+function toggleMenu(id){
+    let menu = document.getElementById(id);
+
+    // cerrar otros
+    document.querySelectorAll('.dropdown').forEach(d=>{
+        if(d.id !== id) d.style.display = 'none';
+    });
+
+    // toggle
+    menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+}
+
+function logout(){
+    alert("Sesión cerrada");
+    window.location.href="index.html"
+}
+</script>
+</body>
+</html>

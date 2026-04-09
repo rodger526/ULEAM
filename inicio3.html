@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="inicio.css">
+<title>Xisce</title>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    
+    <div class="logo">
+        <img src="presentacion.png">
+        <div>
+            <div><b>ULEAM</b></div>
+            <small>Universidad Laica Eloy Alfaro de Manabí</small>
+        </div>
+    </div>
+
+    <div class="top-menu">
+
+        <!-- SERVICIOS -->
+        <div class="menu-item" onclick="toggleMenu('servicios')">
+            Servicios
+            <div class="dropdown" id="servicios">
+                <a href="notas3.html"><i class="fa-solid fa-user"></i> Mis notas</a>
+                <a href="#"><i class="fa-solid fa-file"></i> Hoja de vida</a>
+                <a href="#"><i class="fa-solid fa-graduation-cap"></i> Materias abiertas</a>
+                <a href="#"><i class="fa-regular fa-square-check"></i> Registro</a>
+                <a href="calendario3.html"><i class="fa-solid fa-calendar-days"></i> Calendario</a>
+                <a href="#"><i class="fa-solid fa-briefcase"></i> Banco laboral</a>
+                <a href="#"><i class="fa-solid fa-calendar"></i> Eventos</a>
+                <a href="#"><i class="fa-solid fa-clipboard-list"></i> Estado Heteroevaluaciones</a>
+            </div>
+        </div>
+        <div class="menu-item" onclick="toggleMenu('notificaciones')">
+    <i class="fa-regular fa-bell"></i>
+
+    <div class="dropdown notif-box" id="notificaciones">
+        
+        <div class="notif-header">
+            Notificaciones
+        </div>
+
+        <div class="notif-content">
+            <div class="notif-empty">
+                <i class="fa-regular fa-face-frown"></i>
+                <p>No hay notificaciones que leer!</p>
+            </div>
+        </div>
+
+        <div class="notif-footer">
+            <a href="#"><i class="fa fa-bars"></i> Ver todas las notificaciones.</a>
+        </div>
+
+    </div>
+</div>
+
+        <!-- PERFIL -->
+        <div class="menu-item profile" onclick="toggleMenu('perfil')">
+            <img src="manu.png">
+            <span>Manuel Enrique Bravo</span>
+
+        <div class="dropdown" id="perfil">
+            <a href="#"><i class="fa fa-user"></i> Perfil</a>
+            <a href="#"><i class="fa-solid fa-graduation-cap"></i>Cambiar clave</a>
+        </div>
+        </div>
+        <div href="index.html" id="salir" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+
+    </div>
+</div>
+
+<!-- BIENVENIDA -->
+<div class="welcome">
+    <h2>Bienvenido(a) MANUEL ENRIQUE BRAVO MONSERRATE</h2>
+    <small>Tipo de Alumno: <b>Regular</b> &nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Número de matrícula:</small>
+    <br>
+    <br>
+    <small>Servicio en línea donde podrás estar más informado de tus estudios.</small>
+</div>
+
+<!-- BOTONES -->
+<div class="main">
+    <button>INGRESAR A MATRÍCULA</button>
+    <button>INGRESAR AULA VIRTUAL</button>
+</div>
+
+<script>
+function toggleMenu(id){
+    let menu = document.getElementById(id);
+
+    // cerrar otros
+    document.querySelectorAll('.dropdown').forEach(d=>{
+        if(d.id !== id) d.style.display = 'none';
+    });
+
+    // toggle
+    menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+}
+
+function logout(){
+    alert("Sesión cerrada");
+    window.location.href="index.html"
+}
+</script>
+
+</body>
+</html>
